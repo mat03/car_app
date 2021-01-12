@@ -1,13 +1,17 @@
 package pl.week3.car_app.controller;
 
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 import pl.week3.car_app.model.Car;
 import pl.week3.car_app.model.Color;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
+@RequestMapping("/cars")
 public class CarController {
     private List<Car> carList;
 
@@ -18,5 +22,35 @@ public class CarController {
         carList.add(new Car(2L,"Fiat", "Seicento", Color.GREEN));
         carList.add(new Car(3L,"Pegout", "206", Color.GREEN));
         carList.add(new Car(2L,"Seat", "Altea xl", Color.WHITE));
+    }
+
+    @GetMapping
+    public ResponseEntity<List<Car>> getCars() {
+        return new ResponseEntity<>(carList, HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Car> getCarById(@PathVariable long id) {
+        Optional<Car> first = carList.stream().filter(c -> c.getId() == id).findFirst();
+        return first.map(car -> new ResponseEntity<>(car, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+
+    @PostMapping
+    public ResponseEntity addCar(@RequestBody Car car) {
+        boolean add = carList.add(car);
+        if (add) {
+            return new ResponseEntity(HttpStatus.CREATED);
+        }
+        return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity removeCar(@PathVariable long id) {
+        Optional<Car> first = carList.stream().filter(c -> c.getId() == id).findFirst();
+        if (first.isPresent()) {
+            carList.remove(first.get());
+            return new ResponseEntity<>(first.get(), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 }
