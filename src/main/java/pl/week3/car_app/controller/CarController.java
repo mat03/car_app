@@ -21,7 +21,7 @@ public class CarController {
         carList.add(new Car(1L,"Fiat", "126p", Color.RED));
         carList.add(new Car(2L,"Fiat", "Seicento", Color.GREEN));
         carList.add(new Car(3L,"Pegout", "206", Color.GREEN));
-        carList.add(new Car(2L,"Seat", "Altea xl", Color.WHITE));
+        carList.add(new Car(4L,"Seat", "Altea xl", Color.WHITE));
     }
 
     @GetMapping
@@ -52,5 +52,16 @@ public class CarController {
             return new ResponseEntity<>(first.get(), HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+    @PutMapping
+    public ResponseEntity modVideo(@RequestBody Car modCar) {
+        Optional<Car> first = carList.stream().filter(c -> c.getId() == modCar.getId()).findFirst();
+        if (first.isPresent()) {
+            carList.remove(first.get());
+            carList.add(modCar);
+            return new ResponseEntity(HttpStatus.OK);
+        }
+        return new ResponseEntity(HttpStatus.NOT_FOUND);
     }
 }
