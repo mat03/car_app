@@ -2,10 +2,10 @@ package pl.week3.car_app.model;
 
 
 public class Car {
-    Long id;
-    String mark;
-    String model;
-    Color color;
+    public Long id;
+    public String mark;
+    public String model;
+    public Color color;
 
     public Car(Long id, String mark, String model, Color color) {
         this.id = id;
