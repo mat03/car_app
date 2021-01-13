@@ -1,6 +1,7 @@
 package pl.week3.car_app.controller;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.week3.car_app.model.Car;
@@ -26,12 +27,14 @@ public class CarController {
         carList.add(new Car(4L,"Seat", "Altea xl", Color.WHITE));
     }
 
-    @GetMapping
+    @GetMapping(produces = {
+            MediaType.APPLICATION_XML_VALUE,
+            MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<List<Car>> getCars() {
         return new ResponseEntity<>(carList, HttpStatus.OK);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping(value = "/{id}")
     public ResponseEntity<Car> getCarById(@PathVariable long id) {
         Optional<Car> first = carList.stream().filter(c -> c.getId() == id).findFirst();
         return first.map(car -> new ResponseEntity<>(car, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
