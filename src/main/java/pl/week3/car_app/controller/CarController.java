@@ -9,6 +9,7 @@ import pl.week3.car_app.model.Color;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/cars")
@@ -19,7 +20,7 @@ public class CarController {
         carList = new ArrayList<>();
 
         carList.add(new Car(1L,"Fiat", "126p", Color.RED));
-        carList.add(new Car(2L,"Fiat", "Seicento", Color.GREEN));
+        carList.add(new Car(2L,"Fiat", "Seicento", Color.RED));
         carList.add(new Car(3L,"Pegout", "206", Color.GREEN));
         carList.add(new Car(4L,"Seat", "Altea xl", Color.WHITE));
     }
@@ -64,4 +65,26 @@ public class CarController {
         }
         return new ResponseEntity(HttpStatus.NOT_FOUND);
     }
+
+    @GetMapping("/color/{color}")
+    public ResponseEntity queryByColor(@PathVariable String color)
+    {
+        Color colorToFind;
+        try {
+            colorToFind = Color.valueOf(color);
+        }catch (Exception e)
+        {
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
+        }
+
+        List<Car> carWithTheSameColor = carList.stream().filter(c ->c.getColor() == colorToFind).collect(Collectors.toList());
+
+        if(carWithTheSameColor.isEmpty())
+        {
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
+        }
+
+        return new ResponseEntity<>(carWithTheSameColor, HttpStatus.OK);
+    }
+
 }
