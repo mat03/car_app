@@ -113,7 +113,7 @@ public class CarController {
         }
         carList.add(modCar);
 
-        return new ResponseEntity(modCar,HttpStatus.NOT_FOUND);
+        return new ResponseEntity(modCar,HttpStatus.OK);
     }
 
 }
